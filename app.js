@@ -35,7 +35,7 @@ passport.use(new LocalStrategy(
     function(username, password, done) {
         db.query("SELECT id, username, passwordHash, publicKey FROM users WHERE username=$1 OR email=$1", [username], (err, result) => {
             if (err) {
-                createError(err);
+                createError(401,err);
                 return done(err);
             }
             if(result.rows.length > 0) {
@@ -62,7 +62,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, cb) => {
     db.query('SELECT id, username, type FROM users WHERE id = $1', [parseInt(id, 10)], (err, results) => {
         if(err) {
-            createError('Error when selecting user on session deserialize', err)
+            createError(500,'Error when selecting user on session deserialize', err)
             return cb(err)
         }
         cb(null, results.rows[0])
@@ -82,7 +82,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get('env') === 'development' ? err : err;
 
   // render the error page
   res.status(err.status || 500);
