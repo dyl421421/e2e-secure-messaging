@@ -4,7 +4,7 @@ var path = require('path');
 var logger = require('morgan');
 var session = require("express-session");
 const db = require("./modules/db-module");
-const bcrypt = require('node-bcrypt');
+const bcrypt = require('bcrypt');
 
 const passport = require('passport')
     , LocalStrategy = require('passport-local').Strategy;
@@ -32,7 +32,7 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
-        db.query("SELECT id, username, passwordHash, passwordSalt, publicKey FROM users WHERE username=$1 OR email=$1", [username], (err, result) => {
+        db.query("SELECT id, username, passwordHash, publicKey FROM users WHERE username=$1 OR email=$1", [username], (err, result) => {
             if (err) {
                 createError(err);
                 return done(err);
@@ -40,12 +40,14 @@ passport.use(new LocalStrategy(
             if(result.rows.length > 0) {
                 const first = result.rows[0];
 
-                let hash = bcrypt.hashpw(password, first.passwordSalt);
-                if (hash === first.passwordHash) {
-                    done(null, { id: first.id, username: first.username, publicKey: first.publicKey});
-                } else {
-                    done(null, false, { message: "Incorrect password" } );
-                }
+                let hash = bcrypt.compare(password, first.passwordHash, (hashError, hashRes) => {
+                    if (hashRes) {
+                        done(null, { id: first.id, username: first.username, publicKey: first.publicKey});
+                    } else {
+                        done(null, false, { message: "Incorrect password" } );
+                    }
+                });
+
             } else {
                 done(null, false, { message: "Incorrect username or email"});
             }

@@ -12,7 +12,7 @@
     "express-session": "^1.17.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "node-bcrypt": "0.0.1",
+    "bcrypt": "",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "pg": "^8.1.0",
