@@ -4,5 +4,22 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css')
+    script(src='/javascripts/jsencrypt.min.js')
   body
-    block content
+      nav.navbar.navbar-expand-sm.fixed-top.bg-dark.navbar-dark.navbar-collapse
+          ul.navbar-nav.mr-auto
+            li.nav-item.active
+              a.nav-link(href='#') Active
+            li.nav-item
+              a.nav-link(href='#') Link
+            li.nav-item
+              a.nav-link(href='#') Link
+            li.nav-item
+              a.nav-link.disabled(href='#') Disabled
+          ul.navbar-nav.ml-auto
+            li.nav-item
+              a.nav-link(href='#') Current Login: #{username}
+            li.nav-item
+              a.nav-link(href='/api/logout') Logout
+
+      block content

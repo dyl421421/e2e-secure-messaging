@@ -33,15 +33,15 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
-        db.query("SELECT id, username, passwordHash, publicKey FROM users WHERE username=$1 OR email=$1", [username], (err, result) => {
+        db.query("SELECT id, username, passwordhash, publickey FROM users WHERE username=$1 OR email=$1", [username], (err, result) => {
             if (err) {
-                createError(401,err);
+                createError(500,err);
                 return done(err);
             }
             if(result.rows.length > 0) {
                 const first = result.rows[0];
 
-                let hash = bcrypt.compare(password, first.passwordHash, (hashError, hashRes) => {
+                let hash = bcrypt.compare(password, first.passwordhash, (hashError, hashRes) => {
                     if (hashRes) {
                         done(null, { id: first.id, username: first.username, publicKey: first.publicKey});
                     } else {
@@ -60,7 +60,7 @@ passport.serializeUser((user, done) => {
     done(null, user.id)
 });
 passport.deserializeUser((id, cb) => {
-    db.query('SELECT id, username, type FROM users WHERE id = $1', [parseInt(id, 10)], (err, results) => {
+    db.query('SELECT id, username FROM users WHERE id = $1', [parseInt(id, 10)], (err, results) => {
         if(err) {
             createError(500,'Error when selecting user on session deserialize', err)
             return cb(err)
@@ -68,6 +68,7 @@ passport.deserializeUser((id, cb) => {
         cb(null, results.rows[0])
     })
 })
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -1,0 +1,26 @@
+extends layout
+
+block content
+    .main.container
+        .row
+            .col-md-6.col-md-offset-3
+                h1.display-4.m-b-2 Register
+                form(method='POST' action='#')
+                    div.form-group
+                        label(for='email') Email
+                        input.form-control(type='text' id='email' placeholder='email@email.com' name='email')
+                    div.form-group
+                        label(for='email') Username
+                        input.form-control(type='text' id='username' placeholder='abc123' name='username')
+                    div.form-group
+                        label(for='email') Display Name
+                        input.form-control(type='text' id='display' placeholder='Jack A.' name='display')
+                    div.form-group
+                        label(for='password') Password
+                        input.form-control(type='password' id='password' placeholder='password' name='password')
+                    div.btn-toolbar
+                        div.btn-group.mr-2
+                            button.btn.btn-primary#register(type='button' onclick="registerHandler()") Register
+                        div.btn-group.mr-2
+                            button.btn.btn-primary#login(type='button' onclick="location.href='/login'") Login
+    script(src='/javascripts/register.js')
